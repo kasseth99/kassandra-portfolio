@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8">
+<script>document.documentElement.classList.add("js")</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kassandra Assoumou – Spécialiste des opérations commerciales</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -81,6 +82,36 @@ footer .sign{font-family:"Cormorant Garamond",Georgia,serif;font-size:2rem;color
 .split img{width:100%;height:auto;border-radius:12px;display:block}
 .group{font-size:clamp(2.3rem,6vw,3.8rem);margin-bottom:.4rem}
 @media (max-width:720px){.split{grid-template-columns:1fr}.split img{max-width:300px}.logos{grid-template-columns:repeat(3,1fr)}}
+
+/* animations */
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes ch{to{opacity:1;transform:none}}
+@keyframes bob{50%{translate:0 -9px}}
+.reveal{animation:none}
+.hero .reveal>:not(h1){opacity:0;animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards}
+.hero .reveal>.role{animation-delay:.95s}
+.hero .reveal>.gold-rule{opacity:1;transform-origin:left;animation:draw 1s cubic-bezier(.2,.7,.2,1) 1.1s backwards}
+.hero .reveal>.lead{animation-delay:1.25s}
+.hero .reveal>.facts{animation-delay:1.5s}
+.ch{display:inline-block;opacity:0;transform:translateY(45%) rotate(5deg);animation:ch .9s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i)*45ms + .15s)}
+.js .rv{opacity:0;transform:translateY(28px);transition:opacity .85s cubic-bezier(.2,.7,.2,1) var(--d,0s),transform .85s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.js .rv.pop{transform:translateY(34px) scale(.93)}
+.js .flyers li.rv{transform:translateY(46px) rotate(var(--r,0deg)) scale(.94)}
+.js .rv.in{opacity:1;transform:none}
+.js .gal img.rv.in:hover{transform:scale(1.05)}
+.gal.photos{overflow:visible}
+.js .gal.photos img.rv.in:hover{transform:scale(1.04);box-shadow:0 18px 36px -18px rgba(43,37,32,.6)}
+.flyers img{transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .25s ease-out}
+.phones img:not(.blog){animation:bob 6s ease-in-out infinite}
+.phones img:nth-child(2){animation-delay:-2s}
+.goods img{animation:bob 7s ease-in-out infinite}
+.goods img:nth-child(2n){animation-delay:-2.5s}.goods img:nth-child(3n){animation-delay:-4.5s}
+.rows>div{transition:background .4s}
+.rows>div:hover{background:linear-gradient(90deg,var(--surface),transparent 80%)}
+.rows dt{transition:color .3s}.rows>div:hover dt{color:var(--gold)}
+#bar{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;z-index:30;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.js .rv,.ch,.hero .reveal>*{opacity:1!important;transform:none!important;animation:none!important;transition:none!important}.phones img,.goods img{animation:none!important}#bar{display:none}}
+@media print{.js .rv,.ch,.hero .reveal>*{opacity:1!important;transform:none!important;animation:none!important;transition:none!important}.phones img,.goods img{animation:none!important;translate:none!important}.shot{translate:none!important}#bar{display:none}}
 </style></head><body><main>
 
 <section class="hero"><div class="reveal">
@@ -165,4 +196,30 @@ footer .sign{font-family:"Cormorant Garamond",Georgia,serif;font-size:2rem;color
 <p><b>Création et projet</b>Photoshop, Figma, AgilePM (APMG International), Opquast</p>
 </section>
 
-</main><main><footer><div class="sign">Merci de votre temps.</div><p>Kassandra Assoumou, Paris</p></footer></main></body></html>
+</main><main><footer><div class="sign">Merci de votre temps.</div><p>Kassandra Assoumou, Paris</p></footer></main><script id="anim">
+(function(){
+if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+var h1=document.querySelector('h1');
+if(h1){var i=0;h1.setAttribute('aria-label','Kassandra Assoumou');h1.innerHTML=['Kassandra','Assoumou'].map(function(l){return l.split('').map(function(c){return '<span class="ch" aria-hidden="true" style="--i:'+(i++)+'">'+c+'</span>'}).join('')}).join('<br>');}
+function idx(el){return Array.prototype.indexOf.call(el.parentNode.children,el)}
+function mark(sel,cls,step){document.querySelectorAll(sel).forEach(function(el){el.classList.add('rv');if(cls)el.classList.add(cls);el.style.setProperty('--d',(step*Math.min(idx(el),6))+'s')})}
+mark('section:not(.hero)>h2,section:not(.hero)>p,.sub>h3,.sub>p','',0);
+mark('.rows>div','',.08);
+mark('.shot,.split>*,.sign','pop',0);
+mark('.flyers li','pop',.12);
+mark('.gal img,.phones img,.logos img','pop',.08);
+document.querySelectorAll('.flyers li').forEach(function(li){li.style.setProperty('--r',((idx(li)-1)*4)+'deg')});
+if('IntersectionObserver' in window){
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var el=e.target;el.classList.add('in');io.unobserve(el);setTimeout(function(){el.style.transitionDelay='0s'},1500)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+}else{document.querySelectorAll('.rv').forEach(function(el){el.classList.add('in')})}
+var bar=document.createElement('div');bar.id='bar';document.body.appendChild(bar);
+var shots=Array.prototype.slice.call(document.querySelectorAll('.shot')),tick=false;
+function upd(){tick=false;var d=document.documentElement,p=scrollY/((d.scrollHeight-innerHeight)||1);bar.style.transform='scaleX('+Math.min(1,Math.max(0,p))+')';shots.forEach(function(s){var r=s.getBoundingClientRect(),q=(r.top+r.height/2-innerHeight/2)/innerHeight;s.style.translate='0 '+(Math.max(-1,Math.min(1,q))*-16)+'px'})}
+addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});upd();
+document.querySelectorAll('.flyers img').forEach(function(img){
+img.addEventListener('pointermove',function(e){if(e.pointerType!=='mouse')return;var r=img.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;img.style.setProperty('--ry',(x*12)+'deg');img.style.setProperty('--rx',(-y*12)+'deg')});
+img.addEventListener('pointerleave',function(){img.style.setProperty('--rx','0deg');img.style.setProperty('--ry','0deg')});
+});
+})();
+</script></body></html>
